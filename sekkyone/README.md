@@ -11,7 +11,7 @@ The [STM32 Nucleo-64 F401RE](https://www.st.com/en/evaluation-tools/nucleo-f401r
 
 ## Sensors and Actuators
 This is the general circuit schema.
-![main-circuit](/images/Main-circuit_bb.png)
+![main-circuit](./images/Main-circuit_bb.png)
 
 ### DHT 11 Temperature and Humidity sensor
 [DHT11 Temperature & Humidity Sensor](https://www.mouser.com/datasheet/2/758/DHT11-Technical-Data-Sheet-Translated-Version-1143054.pdf) features a temperature & humidity sensor
