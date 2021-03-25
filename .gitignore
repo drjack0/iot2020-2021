@@ -1,4 +1,4 @@
 RIOT/
-/sekkyone/bin/
-/sekkyone/bin/*
+
+/sekkyone/bin/**
 
