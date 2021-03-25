@@ -3,7 +3,7 @@
 This is the main repository for the Internet of Things (IoT) course at Sapienza University of Rome.
 
 ## Sekkyone
-Sekkyone is my individual project, a smart garbage bucket that gives you information about filling, internal temperature, flames.
+Sekkyone is my individual project, a smart garbage bucket that gives you information about filling level, internal temperature and flames presence.
 
 Imagine having a garbage collection system organized by filling, with the possibility of no longer having the full bucket on the street or, in the case, knowing if the bucket is full and waiting / going somewhere else to throw the garbage.
 
