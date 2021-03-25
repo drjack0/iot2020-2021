@@ -1,3 +1,4 @@
 RIOT/
-sekkyone/bin/nucleo-f401re/
+!sekkyone/bin/
+sekkyone/bin/*
 
