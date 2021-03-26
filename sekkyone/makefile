@@ -32,7 +32,7 @@ include $(CURDIR)/Makefile.ethos.conf
 USEMODULE += emcute
 SERVER_ADDR = fe80::1
 SERVER_PORT = 1885
-MQTT_TOPIC = sekkyone
+MQTT_TOPIC = sekkyone_out
 
 ifneq (,$(EMCUTE_ID))
   CFLAGS += -DEMCUTE_ID=\"$(EMCUTE_ID)\"

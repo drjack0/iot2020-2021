@@ -1,0 +1,20 @@
+{
+  "name": "mqtt-bridge",
+  "version": "1.0.0",
+  "description": "MQTT Bridge for AWS IoT interaction",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "keywords": [
+    "mqtt",
+    "aws",
+    "iot"
+  ],
+  "author": "Matteo Giaccone",
+  "license": "ISC",
+  "dependencies": {
+    "aws-iot-device-sdk": "^2.2.6",
+    "mqtt": "^4.2.6"
+  }
+}
