@@ -37,7 +37,7 @@
 #define EMCUTE_PRIO (THREAD_PRIORITY_MAIN - 1)
 
 #define NUMOFSUBS (1U)
-#define TOPIC_MAXLEN (64U)
+#define TOPIC_MAXLEN (128U)
 
 typedef struct sensors{
     char temp[10];
@@ -49,8 +49,8 @@ typedef struct sensors{
 
 static char stack[THREAD_STACKSIZE_DEFAULT];
 
-//static emcute_sub_t subscriptions[NUMOFSUBS];
-//static char topics[NUMOFSUBS][TOPIC_MAXLEN];
+static emcute_sub_t subscriptions[NUMOFSUBS];
+static char topics[NUMOFSUBS][TOPIC_MAXLEN];
 
 static void *emcute_thread(void *arg)
 {
@@ -59,7 +59,7 @@ static void *emcute_thread(void *arg)
     return NULL;    /* should never be reached */
 }
 
-/*static void on_pub(const emcute_topic_t *topic, void *data, size_t len){
+static void on_pub(const emcute_topic_t *topic, void *data, size_t len){
     char *in = (char *)data;
     printf("### got publication for topic '%s' [%i] ###\n",
            topic->name, (int)topic->id);
@@ -67,7 +67,7 @@ static void *emcute_thread(void *arg)
         printf("%c", in[i]);
     }
     puts("");
-}*/
+}
 
 static int pub(char* topic, const char* data, int qos){
     emcute_topic_t t;
@@ -86,7 +86,7 @@ static int pub(char* topic, const char* data, int qos){
 
     }
 
-    t.name = MQTT_TOPIC;
+    t.name = MQTT_TOPIC_OUT;
     if(emcute_reg(&t) != EMCUTE_OK){
         puts("PUB ERROR: Unable to obtain Topic ID");
         return 1;
@@ -122,7 +122,7 @@ const char* data_parse(t_sensors* sensors){
 int setup_mqtt(void)
 {
     /* initialize our subscription buffers */
-    //memset(subscriptions, 0, (NUMOFSUBS * sizeof(emcute_sub_t)));
+    memset(subscriptions, 0, (NUMOFSUBS * sizeof(emcute_sub_t)));
 
     /* start the emcute thread */
     thread_create(stack, sizeof(stack), EMCUTE_PRIO, 0, emcute_thread, NULL, "emcute");
@@ -134,7 +134,8 @@ int setup_mqtt(void)
         .family = AF_INET6,
         .port = SERVER_PORT
     };
-    char *topic = MQTT_TOPIC;
+    char *topic_out = MQTT_TOPIC_OUT;
+    //char *topic_in = MQTT_TOPIC_IN;
     char *message = "connected";
     size_t len = strlen(message);
 
@@ -144,27 +145,31 @@ int setup_mqtt(void)
         return 1;
     }
 
-    if (emcute_con(&gw, true, topic, message, len, 0) != EMCUTE_OK) {
+    if (emcute_con(&gw, true, topic_out, message, len, 0) != EMCUTE_OK) {
         printf("error: unable to connect to [%s]:%i\n", SERVER_ADDR, (int)gw.port);
         return 1;
     }
 
-    printf("Successfully connected to gateway at [%s]:%i\n",
-           SERVER_ADDR, (int)gw.port);
+    /*if (emcute_con(&gw, true, topic_in, message, len, 0) != EMCUTE_OK) {
+        printf("error: unable to connect to [%s]:%i\n", SERVER_ADDR, (int)gw.port);
+        return 1;
+    }*/
+
+    printf("Successfully connected to gateway at [%s]:%i\n", SERVER_ADDR, (int)gw.port);
 
     /* setup subscription to topic*/
     
-    /*unsigned flags = EMCUTE_QOS_0;
+    unsigned flags = EMCUTE_QOS_0;
     subscriptions[0].cb = on_pub;
-    strcpy(topics[0], MQTT_TOPIC);
-    subscriptions[0].topic.name = MQTT_TOPIC;
+    strcpy(topics[0], MQTT_TOPIC_IN);
+    subscriptions[0].topic.name = MQTT_TOPIC_IN;
 
     if (emcute_sub(&subscriptions[0], flags) != EMCUTE_OK) {
-        printf("error: unable to subscribe to %s\n", MQTT_TOPIC);
+        printf("error: unable to subscribe to %s\n", MQTT_TOPIC_IN);
         return 1;
     }
 
-    printf("Now subscribed to %s\n", MQTT_TOPIC);*/
+    printf("Now subscribed to %s\n", MQTT_TOPIC_IN);
 
     return 1;
 }
@@ -278,7 +283,7 @@ int main(void){
         sensors.distance = distance;
 
         printf("[MQTT] Publishing data to MQTT Broker\n");
-        pub(MQTT_TOPIC, data_parse(&sensors), 0);
+        pub(MQTT_TOPIC_OUT, data_parse(&sensors), 0);
         xtimer_sleep(2);
 
         //LCD - PRINT TEMPERATURE AND HUMIDITY INFORMATIONS

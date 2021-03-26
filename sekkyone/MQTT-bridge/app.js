@@ -46,7 +46,7 @@ client.on('error',function(error){
 
 client.on('message',function(topic,message){
     console.log("["+topic.toString()+"]"+"message: " + message.toString());
-    device.publish('sekkyone_from_device', JSON.stringify(message));
+    device.publish('sekkyone_from_device', JSON.stringify(message.toString()));
 })
 
 //

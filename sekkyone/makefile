@@ -32,7 +32,8 @@ include $(CURDIR)/Makefile.ethos.conf
 USEMODULE += emcute
 SERVER_ADDR = fe80::1
 SERVER_PORT = 1885
-MQTT_TOPIC = sekkyone_out
+MQTT_TOPIC_OUT = sekkyone_out
+MQTT_TOPIC_IN = sekkyone_in
 
 ifneq (,$(EMCUTE_ID))
   CFLAGS += -DEMCUTE_ID=\"$(EMCUTE_ID)\"
@@ -41,7 +42,8 @@ endif
 #Some flags
 CFLAGS += -DSERVER_ADDR='"$(SERVER_ADDR)"'
 CFLAGS += -DSERVER_PORT=$(SERVER_PORT)
-CFLAGS += -DMQTT_TOPIC='"$(MQTT_TOPIC)"'
+CFLAGS += -DMQTT_TOPIC_OUT='"$(MQTT_TOPIC_OUT)"'
+CFLAGS += -DMQTT_TOPIC_IN='"$(MQTT_TOPIC_IN)"'
 
 #Some features needed for Analog input and RTC (Time)
 FEATURES_REQUIRED += periph_adc
