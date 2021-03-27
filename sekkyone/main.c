@@ -72,7 +72,7 @@ static void on_pub(const emcute_topic_t *topic, void *data, size_t len){
     for (size_t i = 0; i < len; i++) {
         printf("%c", in[i]);
     }
-    //function for cleaning status_MQTT array buffer string
+    //function for cleaning "status_MQTT" array buffer string
     for(size_t i = 0; i < STATUS_LEN; i++){
         if(i < len){
             status_MQTT[i] = in[i];
@@ -114,6 +114,7 @@ static int pub(char* topic, const char* data, int qos){
     return 0;
 }
 
+//This function create a stringified json collecting data from the sensors
 const char* data_parse(t_sensors* sensors){
     static char json[128];
 
@@ -173,7 +174,7 @@ int setup_mqtt(void)
 }
 
 int main(void){
-    puts("Sekkyone - Secchio smart con un sacco di cose\n");
+    puts("Sekkyone - Smart Garbage Bucket\n");
 
     printf("[RIOT DHT11 SENSOR - TEMP & HUM] ");
 
@@ -285,6 +286,7 @@ int main(void){
         pub(MQTT_TOPIC_OUT, data_parse(&sensors), 0);
         xtimer_sleep(2);
 
+        //Long list of LCD print functions...
         hd44780_clear(&dev_lcd);
         hd44780_home(&dev_lcd);
         hd44780_print(&dev_lcd, "TH: ");

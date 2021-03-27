@@ -1,13 +1,10 @@
+//Bridge schema give by AWS official Github repository and SDK
+
 var awsIot = require('aws-iot-device-sdk');
 var mqtt = require('mqtt');
 
-//
-// Replace the values of '<YourUniqueClientIdentifier>' and '<YourCustomEndpoint>'
-// with a unique client identifier and custom host endpoint provided in AWS IoT.
-// NOTE: client identifiers must be unique within your AWS account; if a client attempts
-// to connect with a client identifier which is already in use, the existing
-// connection will be terminated.
-//
+//Configuration of certificates, clientID and host endpoint (AWS IoT ARN Endpoint)
+//Certificates given directly by AWS with "Create a thing" procedure
 var device = awsIot.device({
    keyPath: "certs/sekkyone1.private.key",
   certPath: "certs/sekkyone1.cert.pem",
@@ -16,9 +13,13 @@ var device = awsIot.device({
       host: "a2nkqjvyvlcr2i-ats.iot.us-east-1.amazonaws.com"
 });
 
+//"mqtt" library allows to RSMB connection over 1886 port
 var client = mqtt.connect("mqtt://localhost:1886",{clientId:"mqtt-bridge"});
 var topic_to_sn = "sekkyone_in";
 var topic_from_sn = "sekkyone_out";
+
+//"device" refers to AWS - MQTTBridge communication
+//"client" refers to MQTTBridge - RSMB communication
 
 client.on('connect',function(){
     console.log("connected to MQTT-SN broker");
@@ -40,10 +41,7 @@ client.on('message',function(topic,message){
     console.log("Published to AWS on [sekkyone_from_device]\n");
 })
 
-//
-// Device is an instance returned by mqtt.Client(), see mqtt.js for full
-// documentation.
-//
+
 device.on('connect', function() {
     console.log('connected to AWS');
     device.subscribe('sekkyone_from_aws');
