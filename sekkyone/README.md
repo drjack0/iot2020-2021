@@ -105,7 +105,13 @@ sudo apt install ./mqtt-cli-4.5.1.deb
 ### MQTT Bridge
 To interact with AWS, i created a node.js MQTT-Bridge. For more, open the [corresponding folder](https://github.com/drjack0/iot2020-2021/tree/main/sekkyone/MQTT-bridge), where you can find code and usage schema.
 
-![main-circuit](./images/network_digram.png)
+The MQTT-Bridge subscribes "sekkyone_from_aws" topic and automatically publish received message to "sekkyone_in". Likewise, when a message is published to "sekkyone_out" topic, subscribed by the Bridge, it's automatically published to "sekkyone_from_device" topic.
+
+The AWS IoT Core MQTT subscribe "sekkyone_from_device" topic and publish on "sekkyone_from_aws" topic.
+
+This is the network schema
+
+![network-digram](./images/network_digram.png)
 
 ### Some attentions
 You need to change a small piece of <code>RIOT hd44780 driver</code> for the display to work.

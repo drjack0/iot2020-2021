@@ -4,6 +4,14 @@ MQTT-SN can't communicate directly with the MQTT gateway for AWS services, so a 
 
 This transparent bridge (this is its name) forward all messages received to the same topic to the MQTT broker configured in the cloud backend application.
 
+The MQTT-Bridge subscribes "sekkyone_from_aws" topic and automatically publish received message to "sekkyone_in". Likewise, when a message is published to "sekkyone_out" topic, subscribed by the Bridge, it's automatically published to "sekkyone_from_device" topic.
+
+The AWS IoT Core MQTT subscribe "sekkyone_from_device" topic and publish on "sekkyone_from_aws" topic.
+
+This is the network schema
+
+![network-digram](../images/network_digram.png)
+
 ## Getting Started
 First of all, check to have already installed [*npm*](https://www.npmjs.com/) and [*node.js.*](https://nodejs.org/it/)
 
