@@ -26,27 +26,18 @@ client.on('connect',function(){
         if(!err){
             console.log("Subscribed to: " + topic_from_sn);
         } else {
-            console.log("error: " + err);
-            process.exit(1);
-        }
-    });
-    client.subscribe(topic_to_sn,function(err){
-        if(!err){
-            console.log("Subscribed to: " + topic_to_sn);
-        } else {
-            console.log("error: " + err);
-            process.exit(1);
+            console.log("error subscribing to topic " + topic_from_sn + " : " + err);
         }
     });
 });
 client.on('error',function(error){
-    console.log("Can't connect: " + error);
-    process.exit(1);
+    console.log("Can't connect to RSMB: " + error);
 });
 
 client.on('message',function(topic,message){
-    console.log("["+topic.toString()+"]"+"message: " + message.toString());
-    device.publish('sekkyone_from_device', JSON.stringify(message.toString()));
+    console.log("["+topic.toString()+"]"+" received message: \n" + JSON.stringify(JSON.parse(message), null, 4));
+    device.publish('sekkyone_from_device', JSON.stringify(JSON.parse(message)));
+    console.log("Published to AWS on [sekkyone_from_device]\n");
 })
 
 //
@@ -54,12 +45,11 @@ client.on('message',function(topic,message){
 // documentation.
 //
 device.on('connect', function() {
-    console.log('connect');
+    console.log('connected to AWS');
     device.subscribe('sekkyone_from_aws');
-    //device.publish('sekkyone_from_device', JSON.stringify({ test_data: 1}));
   });
 
 device.on('message', function(topic, payload) {
-    console.log('message', topic, payload.toString());
-    client.publish("sekkyone_in", payload.toString());
+    console.log('Received message', topic, payload.toString());
+    client.publish(topic_to_sn, JSON.parse(payload.toString()).message.toString());
   });

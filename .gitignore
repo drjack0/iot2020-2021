@@ -1,0 +1,9 @@
+RIOT/
+
+/sekkyone/bin/*
+
+/sekkyone/images/*.fzz
+
+/sekkyone/MQTT-bridge/certs/*
+
+/sekkyone/MQTT-bridge/node_modules/*

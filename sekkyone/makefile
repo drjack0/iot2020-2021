@@ -34,6 +34,10 @@ SERVER_ADDR = fe80::1
 SERVER_PORT = 1885
 MQTT_TOPIC_OUT = sekkyone_out
 MQTT_TOPIC_IN = sekkyone_in
+EMCUTE_ID = sekkyone_station1
+
+#Bucket height in mm
+BUCKET_HEIGHT = 200
 
 ifneq (,$(EMCUTE_ID))
   CFLAGS += -DEMCUTE_ID=\"$(EMCUTE_ID)\"
@@ -44,6 +48,9 @@ CFLAGS += -DSERVER_ADDR='"$(SERVER_ADDR)"'
 CFLAGS += -DSERVER_PORT=$(SERVER_PORT)
 CFLAGS += -DMQTT_TOPIC_OUT='"$(MQTT_TOPIC_OUT)"'
 CFLAGS += -DMQTT_TOPIC_IN='"$(MQTT_TOPIC_IN)"'
+
+#Other flags
+CFLAGS += -DBUCKET_HEIGHT='"$(BUCKET_HEIGHT)"'
 
 #Some features needed for Analog input and RTC (Time)
 FEATURES_REQUIRED += periph_adc

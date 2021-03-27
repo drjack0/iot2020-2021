@@ -28,7 +28,7 @@
 
 #define DHT_PARAM_TYPE (DHT11)
 
-#define DELAY (3000LU * US_PER_MS)
+#define DELAY (15000LU * US_PER_MS)
 
 //DEFINE PER EMCUTE
 #ifndef EMCUTE_ID
@@ -39,6 +39,10 @@
 #define NUMOFSUBS (1U)
 #define TOPIC_MAXLEN (128U)
 
+#define STATUS_LEN 5
+
+static char status_MQTT[STATUS_LEN] = "";
+
 typedef struct sensors{
     char temp[10];
     char hum[10];
@@ -46,6 +50,8 @@ typedef struct sensors{
     int level_flame;
     int distance;
 } t_sensors;
+
+hd44780_t dev_lcd;
 
 static char stack[THREAD_STACKSIZE_DEFAULT];
 
@@ -66,7 +72,16 @@ static void on_pub(const emcute_topic_t *topic, void *data, size_t len){
     for (size_t i = 0; i < len; i++) {
         printf("%c", in[i]);
     }
-    puts("");
+    //function for cleaning status_MQTT array buffer string
+    for(size_t i = 0; i < STATUS_LEN; i++){
+        if(i < len){
+            status_MQTT[i] = in[i];
+        } else {
+            status_MQTT[i] = 0;
+        }
+    }
+
+    puts("\n");
 }
 
 static int pub(char* topic, const char* data, int qos){
@@ -83,7 +98,6 @@ static int pub(char* topic, const char* data, int qos){
         default:
             flags |= EMCUTE_QOS_0;
             break;
-
     }
 
     t.name = MQTT_TOPIC_OUT;
@@ -102,19 +116,9 @@ static int pub(char* topic, const char* data, int qos){
 
 const char* data_parse(t_sensors* sensors){
     static char json[128];
-    char datetime[20];
-    time_t current;
-    time(&current);
-    struct tm* t = localtime(&current);
-    int c = strftime(datetime, sizeof(datetime), "%Y-%m-%d %T", t);
-    if (c == 0) {
-        printf("Error! Invalid format\n");
-        return 0;
-    }
 
-    sprintf(json, "{\"id\": \"%s\",\"datetime\": \"%s\", \"temperature\": \"%s\", \"humidity\": \"%s\", \"sampleFlame\": \"%d\", \"levelFlame\": \"%d\", \"distance\": \"%d\"}",
-                  EMCUTE_ID, datetime, sensors->temp, sensors->hum, 
-                  sensors->sample_flame, sensors->level_flame, sensors->distance);
+    sprintf(json, "{\"id\": \"%s\", \"temperature\": \"%s\", \"humidity\": \"%s\", \"levelFlame\": \"%d\", \"distance\": \"%d\"}",
+                  EMCUTE_ID, sensors->temp, sensors->hum, sensors->level_flame, sensors->distance);
     
     return json;
 }
@@ -135,7 +139,6 @@ int setup_mqtt(void)
         .port = SERVER_PORT
     };
     char *topic_out = MQTT_TOPIC_OUT;
-    //char *topic_in = MQTT_TOPIC_IN;
     char *message = "connected";
     size_t len = strlen(message);
 
@@ -149,11 +152,6 @@ int setup_mqtt(void)
         printf("error: unable to connect to [%s]:%i\n", SERVER_ADDR, (int)gw.port);
         return 1;
     }
-
-    /*if (emcute_con(&gw, true, topic_in, message, len, 0) != EMCUTE_OK) {
-        printf("error: unable to connect to [%s]:%i\n", SERVER_ADDR, (int)gw.port);
-        return 1;
-    }*/
 
     printf("Successfully connected to gateway at [%s]:%i\n", SERVER_ADDR, (int)gw.port);
 
@@ -222,12 +220,11 @@ int main(void){
     int flame = 0;
     int16_t temp, hum;
     int distance;
-    char distance_str[4];
+    char fill_level[2];
 
     t_sensors sensors;
 
     printf("[DISPLAY INITIALIZATION] ");
-    hd44780_t dev_lcd;
     if (hd44780_init(&dev_lcd, &hd44780_params[0]) != 0) {
         puts("[FAILED]");
         return 1;
@@ -266,10 +263,12 @@ int main(void){
             printf("No valid measurement is available!\n");
         }
         distance = srf04_get_distance(&dev_us);
-
         printf("SRF04 distance: %d mm\n", distance);
+        printf("BUCKET HEIGHT: %d mm\n", atoi(BUCKET_HEIGHT));
+        printf("Bucket fill level: %d%%\n",  (int)(100.0 * (1.0 * distance) / atoi(BUCKET_HEIGHT)));
+
         sample = adc_sample(ADC_IN_USE, ADC_RES);
-        flame = adc_util_map(sample, ADC_RES, 0, 100);
+        flame = adc_util_map(sample, ADC_RES, 100, 0); //note inverted values in function, cause pull up / pull down issues
         if(sample < 0){
             printf("ADC_LINE(%u): selected resolution not applicable\n", ADC_IN_USE);
         } else {
@@ -286,36 +285,23 @@ int main(void){
         pub(MQTT_TOPIC_OUT, data_parse(&sensors), 0);
         xtimer_sleep(2);
 
-        //LCD - PRINT TEMPERATURE AND HUMIDITY INFORMATIONS
-        hd44780_home(&dev_lcd);
-        hd44780_print(&dev_lcd, "Temp: ");
-        hd44780_print(&dev_lcd, temp_s);
-        hd44780_write(&dev_lcd, (char)223);
-        hd44780_print(&dev_lcd, "C");
-        hd44780_set_cursor(&dev_lcd,0,1);
-        hd44780_print(&dev_lcd, "Hum: ");
-        hd44780_print(&dev_lcd, hum_s);
-        hd44780_print(&dev_lcd, "%");
-        hd44780_home(&dev_lcd);
-
-        xtimer_sleep(3);
-
-        //LCD - PRINT DISTANCE AND FLAME INFORMATIONS
         hd44780_clear(&dev_lcd);
         hd44780_home(&dev_lcd);
-        hd44780_print(&dev_lcd, "Dist: ");
-        sprintf(distance_str,"%d", distance);
-        hd44780_print(&dev_lcd, distance_str);
-        hd44780_print(&dev_lcd, "mm");
+        hd44780_print(&dev_lcd, "TH: ");
+        hd44780_print(&dev_lcd, temp_s);
+        hd44780_write(&dev_lcd, (char)223);
+        hd44780_print(&dev_lcd, "C ");
+        hd44780_print(&dev_lcd, hum_s);
+        hd44780_print(&dev_lcd, "%");
+        
         hd44780_set_cursor(&dev_lcd,0,1);
-        hd44780_print(&dev_lcd, "Flame: ");
-        if(flame <= 60){
-            hd44780_print(&dev_lcd, "YES");
-        } else {
-            hd44780_print(&dev_lcd, "NO");
-        }
-
-        xtimer_sleep(1);
+        sprintf(fill_level,"%d", (int)(100.0 * (1.0 * distance) / atoi(BUCKET_HEIGHT)));
+        hd44780_print(&dev_lcd,"F: ");
+        hd44780_print(&dev_lcd, fill_level);
+        hd44780_print(&dev_lcd, "%");
+        hd44780_print(&dev_lcd, " S: ");
+        hd44780_print(&dev_lcd, status_MQTT);
+        hd44780_home(&dev_lcd);
 
         printf("\n");
 
