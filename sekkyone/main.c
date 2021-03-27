@@ -28,7 +28,7 @@
 
 #define DHT_PARAM_TYPE (DHT11)
 
-#define DELAY (15000LU * US_PER_MS)
+#define DELAY (55000LU * US_PER_MS)
 
 //DEFINE PER EMCUTE
 #ifndef EMCUTE_ID

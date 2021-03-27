@@ -13,6 +13,8 @@ The [STM32 Nucleo-64 F401RE](https://www.st.com/en/evaluation-tools/nucleo-f401r
 This is the general circuit schema.
 ![main-circuit](./images/Main-circuit_bb.png)
 
+All sensors (listed below) retrieve data periodically every minute. On the LCD (refreshed every minute) are displayed some informations, like temperature and humidity (TH), fill level (F) and AWS connection status/message (S).
+
 ### DHT 11 Temperature and Humidity sensor
 [DHT11 Temperature & Humidity Sensor](https://www.mouser.com/datasheet/2/758/DHT11-Technical-Data-Sheet-Translated-Version-1143054.pdf) features a temperature & humidity sensor
 complex with a calibrated digital signal output. By using the exclusive digital-signal-acquisition technique and temperature & humidity sensing technology, it ensures high reliability and excellent long-term stability. This sensor includes a resistive-type humidity measurement component and an NTC temperature measurement component, and connects to a high performance 8-bit microcontroller, offering excellent quality, fast response, anti-interference ability and cost-effectiveness.
@@ -100,8 +102,10 @@ wget https://github.com/hivemq/mqtt-cli/releases/download/v4.5.1/mqtt-cli-4.5.1.
 sudo apt install ./mqtt-cli-4.5.1.deb
 ```
 
-#### MQTT Bridge
-To interact with AWS, i created a node.js MQTT-Bridge. For more, open the [corresponding folder](https://github.com/drjack0/iot2020-2021/tree/main/sekkyone/MQTT-bridge), where you can find code and usage schema
+### MQTT Bridge
+To interact with AWS, i created a node.js MQTT-Bridge. For more, open the [corresponding folder](https://github.com/drjack0/iot2020-2021/tree/main/sekkyone/MQTT-bridge), where you can find code and usage schema.
+
+![main-circuit](./images/network_digram.png)
 
 ### Some attentions
 You need to change a small piece of <code>RIOT hd44780 driver</code> for the display to work.
