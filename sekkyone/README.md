@@ -91,7 +91,7 @@ Now, with an address, STM32 can send messages/data to a MQTT-SN broker
 #### MQTT-SN Broker
 We will use the [Mosquitto Real Simple Message Broker](https://github.com/eclipse/mosquitto.rsmb) as an MQTT/MQTT-SN broker. For configuring the broker, follow this instructions from the [emcute_mqttsn configuration repo - setting up a broker](https://github.com/RIOT-OS/RIOT/tree/master/examples/emcute_mqttsn).
 
-#### MQTT Client
+#### MQTT Local Client
 Publishing messages to the Mosquito RSMB can be done with any MQTT library. In this example we will use the [HiveMQ MQTT Cli](https://hivemq.github.io/mqtt-cli/), a full MQTT 5.0 and MQTT 3.1.1 compatible command line interface for MQTT clients which uses the HiveMQ MQTT Client API.
 
 From their github page,if you are using a *nix system which operates with debian packages, install the MQTT Cli in this suggered way.
@@ -99,6 +99,9 @@ From their github page,if you are using a *nix system which operates with debian
 wget https://github.com/hivemq/mqtt-cli/releases/download/v4.5.1/mqtt-cli-4.5.1.deb
 sudo apt install ./mqtt-cli-4.5.1.deb
 ```
+
+#### MQTT Bridge
+To interact with AWS, i created a node.js MQTT-Bridge. For more, open the [corresponding folder](https://github.com/drjack0/iot2020-2021/tree/main/sekkyone/MQTT-bridge), where you can find code and usage schema
 
 ### Some attentions
 You need to change a small piece of <code>RIOT hd44780 driver</code> for the display to work.
@@ -124,7 +127,12 @@ Here, modify the GPIO_PINS, relative to "Arduino D2,D3,D4,D5,D6,D7", in this way
 
 Now, you can compile all the code without issues.
 
+### Extras
+Opening <code>makefile</code> you can personalize some parameters, including *BUCKET_HEIGHT* (setting your personal bucket heigth), *EMCUTE_ID* (for device ID naming), *MQTT_TOPIC_OUT* and *MQTT_TOPIC_IN* (rsmb default topics for device messages)
+
 ## Usage
+
+### Local communication
 
 The goal is to *publish sensor's data*, at a certain topic, to the MQTT-SN Broker (Mosquitto) from the STM32 Board, making sure the MQTT Client receives them right away.
 
@@ -135,3 +143,13 @@ The goal is to *publish sensor's data*, at a certain topic, to the MQTT-SN Broke
 
 Note that the **process is automatic**, with no need for commands to run on the board
 
+### AWS interaction
+
+The goal is to *publish sensor's data*, at a certain topic, to the MQTT-SN Broker (Mosquitto) from the STM32 Board, making sure the MQTT-Bridge receives them right away and could interact with AWS IoT Core.
+
+1. Start the Mosquitto RSMB: <code>./broker_mqtts config.conf</code>
+2. Start the [MQTT-Bridge](https://github.com/drjack0/iot2020-2021/tree/main/sekkyone/MQTT-bridge): <code>npm start</code> (in MQTT-Bridge directory)
+3. Flash and connect the STM32 board: <code>make BOARD=nucleo-f401re flash term</code>
+4. Waiting for data to be sent by STM32 and received first from the Broker, then from the Bridge and later from AWS
+
+Note that the **process is automatic**, with no need for commands to run on the board
