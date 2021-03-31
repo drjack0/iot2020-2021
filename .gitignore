@@ -5,5 +5,7 @@ RIOT/
 /sekkyone/images/*.fzz
 
 /sekkyone/MQTT-bridge/certs/*
-
 /sekkyone/MQTT-bridge/node_modules/*
+
+/sekkyone/WebApp/sekkyone-backend/node_modules/*
+/sekkyone/WebApp/sekkyone-backend/.serverless/*
