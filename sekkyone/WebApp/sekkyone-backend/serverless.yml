@@ -20,6 +20,9 @@ service: sekkyone-backend
 # Check out our docs for more details
 frameworkVersion: '2'
 
+plugins:
+  - serverless-offline
+
 provider:
   name: aws
   runtime: nodejs14.x
@@ -75,17 +78,27 @@ functions:
     events:
       - websocket:
           route: $connect
+          cors: true
 
   disconnect:
     handler: src/websocket.disconnect
     events:
       - websocket:
           route: $disconnect
+          cors: true
   
   trigger:
     handler: src/websocket.trigger
     events:
-      - stream: arn:aws:dynamodb:us-east-1:815814454771:table/sekkyone_data/stream/2021-03-30T13:26:53.522
+      - stream: arn:aws:dynamodb:us-east-1:815814454771:table/sekkyone_data/stream/2021-04-01T14:50:44.926
+
+  getLastHour:
+    handler: src/rest.getLastHour
+    events:
+      - http:
+          path: sekkyone/lasthour
+          method: get
+          cors: true
 
 
 #  hello:

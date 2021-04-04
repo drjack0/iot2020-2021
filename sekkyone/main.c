@@ -48,7 +48,7 @@ typedef struct sensors{
     char hum[10];
     int sample_flame;
     int level_flame;
-    int distance;
+    int level_fill;
 } t_sensors;
 
 hd44780_t dev_lcd;
@@ -118,8 +118,8 @@ static int pub(char* topic, const char* data, int qos){
 const char* data_parse(t_sensors* sensors){
     static char json[128];
 
-    sprintf(json, "{\"id\": \"%s\", \"temperature\": \"%s\", \"humidity\": \"%s\", \"levelFlame\": \"%d\", \"distance\": \"%d\"}",
-                  EMCUTE_ID, sensors->temp, sensors->hum, sensors->level_flame, sensors->distance);
+    sprintf(json, "{\"id\": \"%s\", \"temperature\": \"%s\", \"humidity\": \"%s\", \"levelFlame\": \"%d\", \"levelFill\": \"%d\"}",
+                  EMCUTE_ID, sensors->temp, sensors->hum, sensors->level_flame, sensors->level_fill);
     
     return json;
 }
@@ -280,7 +280,7 @@ int main(void){
         strcpy(sensors.hum, hum_s);
         sensors.sample_flame = sample;
         sensors.level_flame = flame;
-        sensors.distance = distance;
+        sensors.level_fill = (int)(100.0 * (1.0 * distance) / atoi(BUCKET_HEIGHT));
 
         printf("[MQTT] Publishing data to MQTT Broker\n");
         pub(MQTT_TOPIC_OUT, data_parse(&sensors), 0);
