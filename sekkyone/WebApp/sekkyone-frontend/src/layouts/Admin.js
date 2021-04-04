@@ -13,8 +13,8 @@ import routes from "routes.js";
 
 import styles from "assets/jss/material-dashboard-react/layouts/adminStyle.js";
 
-import bgImage from "assets/img/sidebar-5.jpg";
-import logo from "assets/img/reactlogo.png";
+const bgImage = require("assets/img/sidebar-5.jpg");
+const logo = require("assets/img/reactlogo.png");
 
 let ps;
 

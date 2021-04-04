@@ -8,8 +8,6 @@ var Chartist = require("chartist");
 // #############################
 var delays = 80,
   durations = 500;
-var delays2 = 80,
-  durations2 = 500;
 
 // ##############################
 // // // labels and data handling
@@ -79,7 +77,7 @@ const temperatureChart = {
       tension: 0.5
     }),
     low: 0,
-    high: 40, // creative tim: we recommend you to set the high sa the biggest value + something for a better look
+    high: 50,
     chartPadding: {
       top: 0,
       right: 0,
@@ -157,7 +155,7 @@ const humidityChart = {
       showLabel: true,
     },
     low: 0,
-    high: 100,
+    high: 101,
     chartPadding: {
       top: 0,
       right: 5,
@@ -180,11 +178,25 @@ const humidityChart = {
   ],
   animation: {
     draw: function(data) {
-      if (data.type === "bar") {
+      if (data.type === "line" || data.type === "area") {
+        data.element.animate({
+          d: {
+            begin: 600,
+            dur: 700,
+            from: data.path
+              .clone()
+              .scale(1, 0)
+              .translate(0, data.chartRect.height())
+              .stringify(),
+            to: data.path.clone().stringify(),
+            easing: Chartist.Svg.Easing.easeOutQuint
+          }
+        });
+      } else if (data.type === "point") {
         data.element.animate({
           opacity: {
-            begin: (data.index + 1) * delays2,
-            dur: durations2,
+            begin: (data.index + 1) * delays,
+            dur: durations,
             from: 0,
             to: 1,
             easing: "ease"
@@ -219,7 +231,7 @@ const fillChart = {
       tension: 0
     }),
     low: 0,
-    high: 100, // creative tim: we recommend you to set the high sa the biggest value + something for a better look
+    high: 101, // creative tim: we recommend you to set the high sa the biggest value + something for a better look
     chartPadding: {
       top: 0,
       right: 0,
@@ -243,7 +255,7 @@ const fillChart = {
             easing: Chartist.Svg.Easing.easeOutQuint
           }
         });
-      } else if (data.type === "point") {
+      } else if (data.type === "point"  || data.type === "bar") {
         data.element.animate({
           opacity: {
             begin: (data.index + 1) * delays,

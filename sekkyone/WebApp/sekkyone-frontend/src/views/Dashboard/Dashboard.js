@@ -5,18 +5,12 @@ import ChartistGraph from "react-chartist";
 import { makeStyles } from "@material-ui/core/styles";
 import Icon from "@material-ui/core/Icon";
 // @material-ui/icons
-import Warning from "@material-ui/icons/Warning";
-import DateRange from "@material-ui/icons/DateRange";
-import LocalOffer from "@material-ui/icons/LocalOffer";
-import Update from "@material-ui/icons/Update";
-import ArrowUpward from "@material-ui/icons/ArrowUpward";
 import AccessTime from "@material-ui/icons/AccessTime";
 
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import Table from "components/Table/Table.js";
-import Danger from "components/Typography/Danger.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardIcon from "components/Card/CardIcon.js";
@@ -47,7 +41,7 @@ export default function Dashboard() {
   const restURL = "https://8nbuwj3tae.execute-api.us-east-1.amazonaws.com/dev/sekkyone/lasthour"
   const messageHistory = useRef([]);
 
-  const [storedValues, setStoredValues] = useState([]);
+  const [storedValues, setStoredValues] = useState();
   const [isLoading, setLoading] = useState(false);
   const [appOK, setOK] = useState(false);
 
@@ -185,7 +179,7 @@ export default function Dashboard() {
               </CardIcon>
               <p className={classes.cardCategory}>Temperature</p>
               <h3 className={classes.cardTitle}>
-                {lastMessage !== null ? JSON.parse(lastMessage.data).device_data.temperature : ((isLoading && storedValues.Items[0] === undefined) ? "Con.." : storedValues.Items[1].device_data.temperature)} <small>°C</small>
+                {lastMessage !== null ? JSON.parse(lastMessage.data).device_data.temperature : ((isLoading && storedValues.Items.length === 0) ? "Con.." : (sortedArray.length === 0 ? "No data" : storedValues.Items[storedValues.Items.length - 1].device_data.temperature))} <small>°C</small>
               </h3>
             </CardHeader>
             <CardFooter stats>
@@ -204,7 +198,7 @@ export default function Dashboard() {
               </CardIcon>
               <p className={classes.cardCategory}>Humidity</p>
               <h3 className={classes.cardTitle}>
-              {lastMessage !== null ? JSON.parse(lastMessage.data).device_data.humidity : ((isLoading && storedValues.Items[0] === undefined) ? "Con.." : storedValues.Items[1].device_data.humidity)} <small>%</small></h3>
+              {lastMessage !== null ? JSON.parse(lastMessage.data).device_data.humidity : ((isLoading && storedValues.Items[0] === undefined) ? "Con.." : (sortedArray.length === 0 ? "No data" : storedValues.Items[storedValues.Items.length - 1].device_data.humidity))} <small>%</small></h3>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
@@ -222,7 +216,7 @@ export default function Dashboard() {
               </CardIcon>
               <p className={classes.cardCategory}>Flame Level</p>
               <h3 className={classes.cardTitle}>
-                {lastMessage !== null ? JSON.parse(lastMessage.data).device_data.levelFlame : ((isLoading && storedValues.Items[0] === undefined) ? "Con.." : storedValues.Items[1].device_data.levelFlame)} <small>%</small>
+                {lastMessage !== null ? JSON.parse(lastMessage.data).device_data.levelFlame : ((isLoading && storedValues.Items[0] === undefined) ? "Con.." : (sortedArray.length === 0 ? "No data" : storedValues.Items[storedValues.Items.length - 1].device_data.levelFlame))} <small>%</small>
               </h3>
             </CardHeader>
             <CardFooter stats>
@@ -241,7 +235,7 @@ export default function Dashboard() {
               </CardIcon>
               <p className={classes.cardCategory}>Fill Level</p>
               <h3 className={classes.cardTitle}>
-              {lastMessage !== null ? JSON.parse(lastMessage.data).device_data.levelFill : ((isLoading && storedValues.Items[0] === undefined) ? "Con.." : storedValues.Items[1].device_data.levelFill)} <small>%</small>
+              {lastMessage !== null ? JSON.parse(lastMessage.data).device_data.levelFill : ((isLoading && storedValues.Items[0] === undefined) ? "Con.." : (sortedArray.length === 0 ? "No data" : storedValues.Items[storedValues.Items.length - 1].device_data.levelFill))} <small>%</small>
               </h3>
             </CardHeader>
             <CardFooter stats>
@@ -270,18 +264,18 @@ export default function Dashboard() {
             <CardBody>
               <h4 className={classes.cardTitle}>Daily Temperature</h4>
               <p className={classes.cardCategory}>
-                  <Icon fontSize="small">functions</Icon>{" "}Average: {average("TEMP")}°C
+                  <Icon fontSize="small">functions</Icon>{" "}Average: {sortedArray.length === 0 ? "..." : average("TEMP")}°C
               </p>
               <p className={classes.cardCategory}>
-                  <Icon fontSize="small">expand_more</Icon>{" "}Minimum: {minimum("TEMP").mes}°C at {minimum("TEMP").date}
+                  <Icon fontSize="small">expand_more</Icon>{" "}Minimum: {sortedArray.length === 0 ? "..." : minimum("TEMP").mes}°C at {sortedArray.length === 0 ? "..." : minimum("TEMP").date}
               </p>
               <p className={classes.cardCategory}>
-                  <Icon fontSize="small">expand_less</Icon>{" "}Maximum: {maximum("TEMP").mes}°C at {maximum("TEMP").date}
+                  <Icon fontSize="small">expand_less</Icon>{" "}Maximum: {sortedArray.length === 0 ? "..." : maximum("TEMP").mes}°C at {sortedArray.length === 0 ? "..." : maximum("TEMP").date}
               </p>
             </CardBody>
             <CardFooter chart>
               <div className={classes.stats}>
-                <AccessTime /> Last Value {sortedArray[sortedArray.length-1][1]}
+                <AccessTime /> Last Value {sortedArray.length === 0 ? "..." : sortedArray[sortedArray.length-1][1]}
               </div>
             </CardFooter>
           </Card>
@@ -300,20 +294,20 @@ export default function Dashboard() {
               />
             </CardHeader>
             <CardBody>
-              <h4 className={classes.cardTitle}>Daily Temperature</h4>
+              <h4 className={classes.cardTitle}>Daily Humidity</h4>
               <p className={classes.cardCategory}>
-                  <Icon fontSize="small">functions</Icon>{" "}Average: {average("HUM")}%
+                  <Icon fontSize="small">functions</Icon>{" "}Average: {sortedArray.length === 0 ? "..." : average("HUM")}%
               </p>
               <p className={classes.cardCategory}>
-                  <Icon fontSize="small">expand_more</Icon>{" "}Minimum: {minimum("HUM").mes}% at {minimum("HUM").date}
+                  <Icon fontSize="small">expand_more</Icon>{" "}Minimum: {sortedArray.length === 0 ? "..." : minimum("HUM").mes}% at {sortedArray.length === 0 ? "..." : minimum("HUM").date}
               </p>
               <p className={classes.cardCategory}>
-                  <Icon fontSize="small">expand_less</Icon>{" "}Maximum: {maximum("HUM").mes}% at {maximum("HUM").date}
+                  <Icon fontSize="small">expand_less</Icon>{" "}Maximum: {sortedArray.length === 0 ? "..." : maximum("HUM").mes}% at {sortedArray.length === 0 ? "..." : maximum("HUM").date}
               </p>
             </CardBody>
             <CardFooter chart>
               <div className={classes.stats}>
-                <AccessTime /> Last Value {sortedArray[sortedArray.length-1][1]}
+                <AccessTime /> Last Value {sortedArray.length === 0 ? "..." : sortedArray[sortedArray.length-1][1]}
               </div>
             </CardFooter>
           </Card>
@@ -331,20 +325,20 @@ export default function Dashboard() {
               />
             </CardHeader>
             <CardBody>
-              <h4 className={classes.cardTitle}>Daily Temperature</h4>
+              <h4 className={classes.cardTitle}>Daily Fill Level</h4>
               <p className={classes.cardCategory}>
-                  <Icon fontSize="small">functions</Icon>{" "}Average: {average("FILL")}%
+                  <Icon fontSize="small">functions</Icon>{" "}Average: {sortedArray.length === 0? "..." : average("FILL")}%
               </p>
               <p className={classes.cardCategory}>
-                  <Icon fontSize="small">expand_more</Icon>{" "}Minimum: {minimum("FILL").mes}% at {minimum("FILL").date}
+                  <Icon fontSize="small">expand_more</Icon>{" "}Minimum: {sortedArray.length === 0 ? "..." : minimum("FILL").mes}% at {sortedArray.length === 0 ? "..." : minimum("FILL").date}
               </p>
               <p className={classes.cardCategory}>
-                  <Icon fontSize="small">expand_less</Icon>{" "}Maximum: {maximum("FILL").mes}% at {maximum("FILL").date}
+                  <Icon fontSize="small">expand_less</Icon>{" "}Maximum: {sortedArray.length === 0 ? "..." : maximum("FILL").mes}% at {sortedArray.length === 0 ? "..." : maximum("FILL").date}
               </p>
             </CardBody>
             <CardFooter chart>
               <div className={classes.stats}>
-                <AccessTime /> Last Value {sortedArray[sortedArray.length-1][1]}
+                <AccessTime /> Last Value {sortedArray.length === 0 ? "..." : sortedArray[sortedArray.length-1][1]}
               </div>
             </CardFooter>
           </Card>
