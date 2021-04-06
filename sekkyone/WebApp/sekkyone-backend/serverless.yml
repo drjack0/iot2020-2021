@@ -57,6 +57,11 @@ provider:
             - "execute-api:Invoke"
           Resource:
             - "arn:aws:execute-api:*:*:*"
+        - Effect: Allow
+          Action:
+            - "iot:Publish"
+          Resource:
+            - "arn:aws:iot:us-east-1:815814454771:*"
 
 # you can define service wide environment variables here
   environment:
@@ -92,12 +97,20 @@ functions:
     events:
       - stream: arn:aws:dynamodb:us-east-1:815814454771:table/sekkyone_data/stream/2021-04-01T14:50:44.926
 
-  getLastHour:
-    handler: src/rest.getLastHour
+  getLastDay:
+    handler: src/rest.getLastDay
     events:
       - http:
-          path: sekkyone/lasthour
+          path: sekkyone/lastday
           method: get
+          cors: true
+
+  postMes:
+    handler: src/rest.postMes
+    events:
+      - http:
+          path: sekkyone/postmes
+          method: post
           cors: true
 
 

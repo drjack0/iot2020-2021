@@ -24,7 +24,7 @@ function buildResponse(statusCode,body){
     };
 }
 
-module.exports.getLastHour = async function (event, context){
+module.exports.getLastDay = async function (event, context){
     console.log(event);
     const lastTime = (Date.now() - 24*60*60*1000).toString();
     const params = {
@@ -44,5 +44,28 @@ module.exports.getLastHour = async function (event, context){
     } catch(err) {
         console.log(err);
         return failure({status: false});
+    }
+}
+
+module.exports.postMes = async function (event, context){
+    console.log("EVENT BODY", event.body)
+    const data = JSON.parse(event.body);
+    console.log("PARSED");
+    var iotData = new AWS.IotData({
+        endpoint: "a2nkqjvyvlcr2i-ats.iot.us-east-1.amazonaws.com"
+    })
+    var params = {
+        topic: "sekkyone_from_aws",
+        payload: JSON.stringify(data),
+        qos: 0
+    }
+    console.log(params);
+
+    try{
+        const result = await iotData.publish(params).promise();
+        return success({message: "OK"});
+    } catch(err) {
+        console.log("ERR AWAIT", err);
+        return failure({status: false})
     }
 }

@@ -16,6 +16,8 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardIcon from "components/Card/CardIcon.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
+import CustomInput from "components/CustomInput/CustomInput.js";
+import Button from "components/CustomButtons/Button.js";
 
 import axios from "axios";
 
@@ -37,8 +39,10 @@ const useStyles = makeStyles(styles);
 export default function Dashboard() {
   const classes = useStyles();
 
+  const [mqttMes, setMqttMes] = useState("");
+
   const socketURL = "wss://qwd3tq7x8l.execute-api.us-east-1.amazonaws.com/dev";
-  const restURL = "https://8nbuwj3tae.execute-api.us-east-1.amazonaws.com/dev/sekkyone/lasthour"
+  const restURL = "https://8nbuwj3tae.execute-api.us-east-1.amazonaws.com/dev/sekkyone"
   const messageHistory = useRef([]);
 
   const [storedValues, setStoredValues] = useState();
@@ -115,7 +119,7 @@ export default function Dashboard() {
   const getDataStored = async() => {
     setLoading(true)
     try{
-      const res = await axios.get(restURL);
+      const res = await axios.get(restURL+"/lastday");
       setStoredValues(res.data);
     } catch(err) {
       console.log("ERR", err);
@@ -123,6 +127,17 @@ export default function Dashboard() {
     } finally {
       setLoading(false);
       setOK(true);
+    }
+  }
+
+  const sendState = async(event) => {
+    console.log(mqttMes);
+    try{
+      const res = axios.post(restURL+"/postmes",{message: mqttMes});
+      console.log(res);
+    } catch(err){
+      console.log("ERR",err);
+      return;
     }
   }
 
@@ -345,12 +360,38 @@ export default function Dashboard() {
         </GridItem>
       </GridContainer>
 
+      <GridContainer>
+        <GridItem xs={12}>
+          <Card>
+            <CardHeader color="rose">
+              <h4 className={classes.cardTitleWhite}>Set device state</h4>
+              <p className={classes.cardCategoryWhite}>Publish a (max 5 chars) message to device</p>
+            </CardHeader>
+            <CardBody>
+                  <CustomInput
+                    labelText="Insert the state-message"
+                    id="mqtt-message"
+                    formControlProps={{
+                      fullWidth: true
+                    }}
+                    inputProps={{
+                      disabled: false,
+                      onChange: e => {setMqttMes(e.target.value)},
+                    }}
+                    value= {mqttMes}                                
+                  />
+                  <Button disabled={mqttMes.length > 5} type="button" color="rose" size="sm" onClick={() => sendState(mqttMes)}><Icon fontSize = "small">send</Icon> Send</Button>
+            </CardBody>
+          </Card>
+        </GridItem>
+      </GridContainer>
+
 
       <GridContainer>
         <GridItem xs={12}>
           <Card>
             <CardHeader color="primary">
-              <h4 className={classes.cardTitleWhite}>Last Hour Measurements</h4>
+              <h4 className={classes.cardTitleWhite}>Last Day Measurements</h4>
               <p className={classes.cardCategoryWhite}>
                 Refresh page to update data
               </p>
