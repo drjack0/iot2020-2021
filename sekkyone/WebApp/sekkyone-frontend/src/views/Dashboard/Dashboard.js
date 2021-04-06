@@ -19,6 +19,8 @@ import CardFooter from "components/Card/CardFooter.js";
 import CustomInput from "components/CustomInput/CustomInput.js";
 import Button from "components/CustomButtons/Button.js";
 
+import SnackBar from "components/Snackbar/Snackbar.js";
+
 import axios from "axios";
 
 import {
@@ -37,9 +39,33 @@ import useWebSocket, { ReadyState } from "react-use-websocket";
 const useStyles = makeStyles(styles);
 
 export default function Dashboard() {
+  const [sendOpen, setSendOpen] = useState(false);
+  const [sendPlace, setSendPlace] = useState("tc");
+  const [sendColor, setSendColor] = useState("info");
+
+  const showNotification = function(){
+    if(sendOpen === false){
+      var color;
+      switch(mqttRes){
+        case "OK":
+          color = "danger";
+          break;
+        case "NO":
+          color = "danger";
+          break;
+      }
+      setSendColor(color);
+      setSendOpen(true);
+      setTimeout(function(){
+        setSendOpen(false);
+      }, 6000);
+    }
+  };
+
   const classes = useStyles();
 
   const [mqttMes, setMqttMes] = useState("");
+  const [mqttRes, setMqttRes] = useState("");
 
   const socketURL = "wss://qwd3tq7x8l.execute-api.us-east-1.amazonaws.com/dev";
   const restURL = "https://8nbuwj3tae.execute-api.us-east-1.amazonaws.com/dev/sekkyone"
@@ -130,14 +156,18 @@ export default function Dashboard() {
     }
   }
 
-  const sendState = async(event) => {
+  const sendState = async() => {
     console.log(mqttMes);
     try{
-      const res = axios.post(restURL+"/postmes",{message: mqttMes});
-      console.log(res);
+      const result = await axios.post(restURL+"/postmes",{message: mqttMes});
+      setMqttRes(result.data.message);
+      console.log(result);
     } catch(err){
       console.log("ERR",err);
       return;
+    } finally {
+      console.log(mqttRes);
+      showNotification()
     }
   }
 
@@ -368,19 +398,27 @@ export default function Dashboard() {
               <p className={classes.cardCategoryWhite}>Publish a (max 5 chars) message to device</p>
             </CardHeader>
             <CardBody>
-                  <CustomInput
-                    labelText="Insert the state-message"
-                    id="mqtt-message"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                    inputProps={{
-                      disabled: false,
-                      onChange: e => {setMqttMes(e.target.value)},
-                    }}
-                    value= {mqttMes}                                
-                  />
-                  <Button disabled={mqttMes.length > 5} type="button" color="rose" size="sm" onClick={() => sendState(mqttMes)}><Icon fontSize = "small">send</Icon> Send</Button>
+              <CustomInput
+                labelText="Insert the state-message"
+                id="mqtt-message"
+                formControlProps={{
+                  fullWidth: true
+                }}
+                inputProps={{
+                  disabled: false,
+                  onChange: e => {setMqttMes(e.target.value)},
+                }}
+                value= {mqttMes}                                
+              />
+              <Button disabled={mqttMes.length > 5} type="button" color="rose" size="sm" onClick={async () => await sendState()}><Icon fontSize = "small">send</Icon> Send</Button>              
+              <SnackBar
+                place={sendPlace}
+                color={sendColor}
+                message={"Sent: " + mqttMes + " Response: " + mqttRes}
+                open={sendOpen}
+                closeNotification={() => setSendOpen(false)}
+                close
+              />        
             </CardBody>
           </Card>
         </GridItem>
