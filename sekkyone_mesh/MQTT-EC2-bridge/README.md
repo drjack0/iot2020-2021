@@ -8,21 +8,4 @@ The MQTT-Bridge subscribes "sekkyone_from_aws" topic and automatically publish r
 
 The AWS IoT Core MQTT subscribe "sekkyone_from_device" topic and publish on "sekkyone_from_aws" topic.
 
-This is the network schema
-
-![network-digram](../images/network_digram.png)
-
-## Getting Started
-First of all, check to have already installed [*npm*](https://www.npmjs.com/) and [*node.js.*](https://nodejs.org/it/)
-
-Clone the main repository, move to MQTT-Bridge folder and create a folder *certs*
-
-```bash
-git clone https://github.com/drjack0/iot2020-2021.git
-cd sekkyone/MQTT-bridge
-mkdir certs
-```
-
-Now, [follow this tutorial]() for generate AWS certificates and getting started with AWS IoT Core. These files must be copied in *certs* folder and *app.js* code must be modified for your certs name [(*more info here*)](https://github.com/aws/aws-iot-device-sdk-js).
-
-Finally, run <code>npm install</code> for installing dependencies and node_modules. Then,for starting the bridge-script, type <code>npm start</code>
+This script runs on an EC2 machine in AWS environment, for more complete informations on how to configure it, consult the [page relating to its operation](https://github.com/drjack0/iot2020-2021/tree/main/sekkyone/MQTT-bridge).
