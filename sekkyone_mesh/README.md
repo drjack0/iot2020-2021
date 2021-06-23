@@ -21,7 +21,7 @@ The main limitation of such a network lies in the response times in interfacing 
 The system used for the experiment uses an EC2 Machine for message brokering and two kinds of nodes from the testbed:
 * 2+ [IoT-Lab M3 nodes](https://www.iot-lab.info/docs/boards/iot-lab-m3/), one of which acts as a border router of the mesh network while the remaining ones run the application firmware. This one has been suitably modified to run on the nodes of the IoT-Lab system, simulating the data of the various sensors connected to the STM-32 nucleo board
 * 1 [IoT-Lab A8 node](https://www.iot-lab.info/docs/boards/iot-lab-a8-m3/), which hosts the MQTT-SN mosquitto.rsmb broker and relative [configuration file](./iot-lab/config.conf)
-* Cloud components, which remain mainly the same, except for some changes to the script that acts as a mqtt bridge between mosquitto and aws, this time hosted not locally but on a special ec2 machine. A [jupyter notebook](./iot-lab/sekkyone_mesh.ipynb) is also employed to interact with the testbed
+* Cloud components, which remain mainly the same, except for some changes to the script that acts as a mqtt bridge between mosquitto and aws, this time hosted not locally but on a special ec2 machine. A [jupyter notebook](./iot-lab/sekkyone-mesh.ipynb) is also employed to interact with the testbed
 
 ### How do you measure the performance of the system?
 
