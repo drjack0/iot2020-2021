@@ -29,3 +29,11 @@ The system used for the experiment uses an EC2 Machine for message brokering and
 
 #### Conclusions
 
+## EC2 Machine
+
+For the EC2 machine code and usage, see the script in its relative folder and upload it to your cloud server. Access the Server with ssh, open 1883 port and start the script, that will listen for incoming communications on port previously mentioned
+
+## IoT-Lab Setup
+
+In order to set up the FIT/IoT-Lab enviroment, it is enough to follow the Jupyter notebook provided in the iot-lab folder, which explains every step to perform in order to reproduce the experiment, flash the firmwares and run the MQTT/SN broker.
+
