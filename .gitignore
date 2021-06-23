@@ -40,5 +40,5 @@ RIOT/
 /sekkyone/WebApp/sekkyone-frontend/package-lock.json
 
 # SEKKYONE MESH NETWORK
-/sekkyone/MQTT-EC2-bridge/certs/*
-/sekkyone/MQTT-EC2-bridge/node_modules/*
+/sekkyone_mesh/MQTT-EC2-bridge/certs/*
+/sekkyone_mesh/MQTT-EC2-bridge/node_modules/*
