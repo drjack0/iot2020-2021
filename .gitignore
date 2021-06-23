@@ -1,31 +1,32 @@
 RIOT/
 
+#SEKKYONE
 /sekkyone/bin/*
 
 /sekkyone/images/*.fzz
 
-#Ignored files from MQTT-bridge
+##Ignored files from MQTT-bridge
 /sekkyone/MQTT-bridge/certs/*
 /sekkyone/MQTT-bridge/node_modules/*
 
-#Ignored files from sekkyone-backend
+##Ignored files from sekkyone-backend
 /sekkyone/WebApp/sekkyone-backend/node_modules/*
 /sekkyone/WebApp/sekkyone-backend/.serverless/*
 
-#Ignored files from sekkyone-frontend
-# dependencies
+##Ignored files from sekkyone-frontend
+###dependencies
 /sekkyone/WebApp/sekkyone-frontend/node_modules/*
 
-# testing
+###testing
 /sekkyone/WebApp/sekkyone-frontend/coverage/*
 
-# production
+###production
 /sekkyone/WebApp/sekkyone-frontend/build/*
 
-# npmjs
+###npmjs
 /sekkyone/WebApp/sekkyone-frontend/dist/*
 
-# misc
+###misc
 /sekkyone/WebApp/sekkyone-frontend/.DS_Store
 /sekkyone/WebApp/sekkyone-frontend/.env.local
 /sekkyone/WebApp/sekkyone-frontend/.env.development.local
@@ -37,3 +38,7 @@ RIOT/
 /sekkyone/WebApp/sekkyone-frontend/yarn-error.log*
 
 /sekkyone/WebApp/sekkyone-frontend/package-lock.json
+
+# SEKKYONE MESH NETWORK
+/sekkyone/MQTT-EC2-bridge/certs/*
+/sekkyone/MQTT-EC2-bridge/node_modules/*
