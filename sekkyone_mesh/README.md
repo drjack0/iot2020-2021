@@ -16,7 +16,7 @@ The main limitation of such a network lies in the response times in interfacing 
 
 ### What are the connected components, the protocols to connect them and the overall IoT architecture?
 
-[INSERT IMAGE OF NETWORK DIAGRAM]
+![network-mesh-diagram](./images/Sekkyone_mesh_networking.png)
 
 The system used for the experiment uses an EC2 Machine for message brokering and two kinds of nodes from the testbed:
 * 2+ [IoT-Lab M3 nodes](https://www.iot-lab.info/docs/boards/iot-lab-m3/), one of which acts as a border router of the mesh network while the remaining ones run the application firmware. This one has been suitably modified to run on the nodes of the IoT-Lab system, simulating the data of the various sensors connected to the STM-32 nucleo board
