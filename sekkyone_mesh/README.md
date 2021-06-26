@@ -2,6 +2,11 @@
 
 Second Individual Assignment for the IoT 2021 Course @ Sapienza University of Rome. For more informations about sekkyone project, [follow this link](https://github.com/drjack0/iot2020-2021/tree/main/sekkyone) or return to the main directory.
 
+In this folder you can have a look to:
+* **dev folder**: Modified main.c and makefile
+* **iot-lab folder**: Jupyter notebook related to IPv6 experiment and config file
+* **MQTT-EC2-bridge folder**: EC2 node script, a simple bridge for passing data from Testbed to AWS IoT Core
+
 ## Questions
 
 First of all, let's answer some questions about the course
@@ -63,7 +68,7 @@ Overall system performance was measured using the tools offered directly by IoT-
 
 ### Wireless Performance
 
-As expected from the iot-lab docs, the measured RSSI for all the nodes is always near -91dBm, so we have not too much noise nor interference.
+As expected from the iot-lab docs, the **measured RSSI for all the nodes is always near -91dBm**, so we have **not too much noise nor interference**.
 
 Sometimes messages from the devices did not manage to correctly arrivate to the router and, other times, there are troubles in making the nodes reach the ipv6 address of the mqtt-sn broker.
 
@@ -73,19 +78,19 @@ To avoid difficulties or collisions, it is advisable to differentiate the firmwa
 
 We can read that power, current and voltage consumptions are not soo heavy and are approximately similar in the 3 application nodes that have the same firmware.
 
-From the graphs we can see that there is an initial peak due to the firmware flash and various subsequent minor peaks, corresponding to the various measurements which, although simulated, temporarily awaken the device
+From the graphs we can see that there is an **initial peak due to the firmware flash** and **various subsequent minor peaks, corresponding to the various measurements** which, although simulated, temporarily awaken the device
 
 ## EC2 Machine
 
-For the EC2 machine code and usage, see the script in its relative folder and upload it to your cloud server. Access the Server with ssh, open 1883 port and start the script, that will listen for incoming communications on port previously mentioned
+For the EC2 machine code and usage, see the **script** in its relative folder and upload it to your cloud server. Access the Server with ssh, open 1883 port and start the script, that will **listen for incoming communications on port previously mentioned**, helped by an auxiliary mosquitto.rsmb broker.
 
 ## IoT-Lab Setup
 
-In order to set up the FIT/IoT-Lab enviroment, it is enough to follow the [Jupyter notebook](./iot-lab/sekkyone-mesh.ipynb) provided in the iot-lab folder, which explains every step to perform in order to reproduce the experiment, flash the firmwares and run the MQTT/SN broker.
+In order to set up the FIT/IoT-Lab enviroment, it is enough to follow the **[Jupyter notebook](./iot-lab/sekkyone-mesh.ipynb)** provided in the iot-lab folder, which explains every step to perform in order to reproduce the experiment, flash the firmwares and run the MQTT/SN broker.
 
 ## Backend and Dashboard implementations
 
-The "post message" api endpoint now can handle multiple device and route messages to target devices.
+The "post message" api endpoint now can handle **multiple device and route messages to target devices**.
 
-Dashboard is updated in order to display aggregated values of every device, and average, minimum and maximum calculated on all devices
+Dashboard is updated in order to **display aggregated values** of every device, and average, minimum and maximum calculated on all devices
 
