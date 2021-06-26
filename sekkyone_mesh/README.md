@@ -83,3 +83,9 @@ For the EC2 machine code and usage, see the script in its relative folder and up
 
 In order to set up the FIT/IoT-Lab enviroment, it is enough to follow the [Jupyter notebook](./iot-lab/sekkyone-mesh.ipynb) provided in the iot-lab folder, which explains every step to perform in order to reproduce the experiment, flash the firmwares and run the MQTT/SN broker.
 
+## Backend and Dashboard implementations
+
+The "post message" api endpoint now can handle multiple device and route messages to target devices.
+
+Dashboard is updated in order to display aggregated values of every device, and average, minimum and maximum calculated on all devices
+
