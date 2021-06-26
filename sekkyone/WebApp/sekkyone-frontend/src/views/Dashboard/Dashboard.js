@@ -65,6 +65,7 @@ export default function Dashboard() {
   const classes = useStyles();
 
   const [mqttMes, setMqttMes] = useState("");
+  const [mqttID, setMqttID] = useState("");
   const [mqttRes, setMqttRes] = useState("");
 
   const socketURL = "wss://qwd3tq7x8l.execute-api.us-east-1.amazonaws.com/dev";
@@ -79,6 +80,32 @@ export default function Dashboard() {
     getDataStored();
     console.log("Use effect call...")
   },[]);
+
+  console.log(document.getElementById("input_table_mes"))
+
+  const filter_id = function(){
+    var input, filter, table_mes, tr, td, i, txtValue;
+    input = document.getElementById("input_table_mes");
+    console.log(input);
+    filter = input.value.toUpperCase();
+    table_mes = document.getElementById("table_mes_id");
+    console.log(table_mes);
+    tr = table_mes.getElementsByTagName("tr");
+
+    for(i=0; i < tr.length; i++){
+      td = tr[i].getElementsByTagName("td")[0];
+      if(td){
+        txtValue = td.textContent || td.innerText;
+        if(txtValue.toUpperCase().indexOf(filter) > -1){
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+  }
+
+
 
   const average = function(param){
     var intParam;
@@ -107,15 +134,18 @@ export default function Dashboard() {
     }
     var min = 101.0;
     var date = "";
+    var device = "";
     for(var i = 0; i < sortedArray.length; i++){
       if(parseFloat(sortedArray[i][intParam]) < min) {
         min = parseFloat(sortedArray[i][intParam]);
         date = sortedArray[i][1];
+        device = sortedArray[i][0];
       }
     }
     return {
       mes: min.toFixed(1),
-      date: date
+      date: date,
+      device: device
     }
   }
 
@@ -129,16 +159,19 @@ export default function Dashboard() {
       intParam = 5;
     }
     var max = 0;
-    var date = ""
+    var date = "";
+    var device = "";
     for(var i = 0; i < sortedArray.length; i++){
       if(parseFloat(sortedArray[i][intParam]) > max) {
         max = parseFloat(sortedArray[i][intParam]);
         date = sortedArray[i][1];
+        device = sortedArray[i][0];
       }
     }
     return {
       mes: max.toFixed(1),
-      date: date
+      date: date,
+      device: device
     }
   }
 
@@ -159,7 +192,10 @@ export default function Dashboard() {
   const sendState = async() => {
     console.log(mqttMes);
     try{
-      const result = await axios.post(restURL+"/postmes",{message: mqttMes});
+      const result = await axios.post(restURL+"/postmes",{
+        message: mqttMes,
+        id: mqttID
+      });
       setMqttRes(result.data.message);
       console.log(result);
     } catch(err){
@@ -230,7 +266,8 @@ export default function Dashboard() {
             <CardFooter stats>
               <div className={classes.stats}>
                 <Icon>update</Icon>
-                  Real time measurement: {lastMessage !== null ? connectionStatus : "No data received"}
+                  Real time: {lastMessage !== null ? connectionStatus : "No Realtime "} 
+                  {lastMessage !== null ? JSON.parse(lastMessage.data).device_id : ((isLoading && storedValues.Items.length === 0) ? "..." : (sortedArray.length === 0 ? "No data" : storedValues.Items[storedValues.Items.length - 1].device_id))}
               </div>
             </CardFooter>
           </Card>
@@ -248,7 +285,8 @@ export default function Dashboard() {
             <CardFooter stats>
               <div className={classes.stats}>
                 <Icon>update</Icon>
-                  Real time measurement: {lastMessage !== null ? connectionStatus : "No data received"}
+                  Real time: {lastMessage !== null ? connectionStatus : "No Realtime "} 
+                  {lastMessage !== null ? JSON.parse(lastMessage.data).device_id : ((isLoading && storedValues.Items.length === 0) ? "..." : (sortedArray.length === 0 ? "No data" : storedValues.Items[storedValues.Items.length - 1].device_id))}
               </div>
             </CardFooter>
           </Card>
@@ -267,7 +305,8 @@ export default function Dashboard() {
             <CardFooter stats>
               <div className={classes.stats}>
                 <Icon>update</Icon>
-                  Real time measurement: {lastMessage !== null ? connectionStatus : "No data received"}
+                  Real time: {lastMessage !== null ? connectionStatus : "No Realtime "} 
+                  {lastMessage !== null ? JSON.parse(lastMessage.data).device_id : ((isLoading && storedValues.Items.length === 0) ? "..." : (sortedArray.length === 0 ? "No data" : storedValues.Items[storedValues.Items.length - 1].device_id))}
               </div>
             </CardFooter>
           </Card>
@@ -286,7 +325,8 @@ export default function Dashboard() {
             <CardFooter stats>
               <div className={classes.stats}>
                 <Icon>update</Icon>
-                  Real time measurement: {lastMessage !== null ? connectionStatus : "No data received"}
+                  Real time: {lastMessage !== null ? connectionStatus : "No Realtime "} 
+                  {lastMessage !== null ? JSON.parse(lastMessage.data).device_id : ((isLoading && storedValues.Items.length === 0) ? "..." : (sortedArray.length === 0 ? "No data" : storedValues.Items[storedValues.Items.length - 1].device_id))}
               </div>
             </CardFooter>
           </Card>
@@ -395,7 +435,7 @@ export default function Dashboard() {
           <Card>
             <CardHeader color="rose">
               <h4 className={classes.cardTitleWhite}>Set device state</h4>
-              <p className={classes.cardCategoryWhite}>Publish a (max 5 chars) message to device</p>
+              <p className={classes.cardCategoryWhite}>Publish a (max 5 chars) message to specified device</p>
             </CardHeader>
             <CardBody>
               <CustomInput
@@ -409,6 +449,18 @@ export default function Dashboard() {
                   onChange: e => {setMqttMes(e.target.value)},
                 }}
                 value= {mqttMes}                                
+              />
+              <CustomInput
+                labelText="Insert the device ID"
+                id="mqtt-id"
+                formControlProps={{
+                  fullWidth: true
+                }}
+                inputProps={{
+                  disabled: false,
+                  onChange: e => {setMqttID(e.target.value)},
+                }}
+                value= {mqttID}                                
               />
               <Button disabled={mqttMes.length > 5} type="button" color="rose" size="sm" onClick={async () => await sendState()}><Icon fontSize = "small">send</Icon> Send</Button>              
               <SnackBar
@@ -427,15 +479,34 @@ export default function Dashboard() {
 
       <GridContainer>
         <GridItem xs={12}>
-          <Card>
+          <Card>       
             <CardHeader color="primary">
-              <h4 className={classes.cardTitleWhite}>Last Day Measurements</h4>
-              <p className={classes.cardCategoryWhite}>
-                Refresh page to update data
-              </p>
+              <GridContainer>
+                <GridItem xs={10}>
+                  <h4 className={classes.cardTitleWhite}>Last Day Measurements</h4>
+                  <p className={classes.cardCategoryWhite}>
+                    Refresh page to update data
+                  </p>
+                </GridItem>
+                <GridItem xs={2}>
+                  <CustomInput
+                    labelText="Search for device id's..."
+                    id="input_table_mes"
+                    formControlProps={{
+                      fullWidth: false
+                    }}
+                    inputProps={{
+                      disabled: false,
+                      onChange: e => {filter_id()},
+                    }}
+                    value= {mqttID}
+                  />
+                </GridItem>
+              </GridContainer>
             </CardHeader>
             <CardBody>
               <Table
+                id="table_mes_id"
                 tableHeaderColor="primary"
                 tableHead={["Device", "Timestamp", "Temperature", "Humidity", "Flame Level", "Fill Level"]}
                 /*tableData={[

@@ -54,9 +54,12 @@ module.exports.postMes = async function (event, context){
     var iotData = new AWS.IotData({
         endpoint: "a2nkqjvyvlcr2i-ats.iot.us-east-1.amazonaws.com"
     })
+    let topic_string = "sekkyone_from_aws/"+data.id;
     var params = {
-        topic: "sekkyone_from_aws",
-        payload: JSON.stringify(data),
+        topic: topic_string,
+        payload: JSON.stringify({
+            message: data.message
+        }),
         qos: 0
     }
     console.log(params);

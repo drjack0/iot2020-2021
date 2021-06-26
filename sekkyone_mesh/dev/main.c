@@ -242,7 +242,7 @@ static int cmd_mqtt_status(int argc, char *argv[]){
     (void)argc;
     (void)argv;
 
-    printf("MQTT BROKER ADDRESS %s PORT %d\n", SERVER_ADDR, SERVER_PORT);
+    printf("MQTT BROKER ADDRESS: %s \nPORT: %d \nTOPIC_IN: %s/%s TOPIC_OUT: %s\n", SERVER_ADDR, SERVER_PORT,MQTT_TOPIC_IN,EMCUTE_ID,MQTT_TOPIC_OUT);
     return 0;
 }
 

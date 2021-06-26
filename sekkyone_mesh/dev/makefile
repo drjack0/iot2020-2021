@@ -36,7 +36,7 @@ SERVER_ADDR ?= 2001:660:3207:400::61
 SERVER_PORT = 1885
 MQTT_TOPIC_OUT = sekkyone_out
 MQTT_TOPIC_IN = sekkyone_in
-EMCUTE_ID = sekkyone_station1
+EMCUTE_ID = station1
 
 ifneq (,$(EMCUTE_ID))
   CFLAGS += -DEMCUTE_ID=\"$(EMCUTE_ID)\"
