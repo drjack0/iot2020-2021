@@ -36,6 +36,8 @@ It was not possible to carry out the performance evaluation due to various malfu
 
 ## Main System Setup
 
+You can find **device firmware** in the *dev* folder. To continue in the tutorial, it is necessary to keep in mind the `APP_EUI`, `DEV_EUI` and `APP_KEY` values ​​coming from TTN, which will then be inserted in the code for the configuration of the LoRa nodes before compiling and flashing the firmwares.
+
 ### AWS Setup
 1. Create and AWS IoT Core application
 2. Set up an [IoT Rule]
@@ -56,7 +58,7 @@ Since the messages arriving on TTN are Base64, it is necessary to format them in
 ### IoT-Lab Setup
 In the *extra* folder you will find the jupyter notebook relating to the experiment with LoRa nodes carried out on IoT-Lab. To set up the testbed correctly, simply follow the steps listed in the [notebook](./extra/sekkyone-lora.ipynb)
 
-### Backend and Dashboard implementations
+## Backend and Dashboard implementations
 To properly manage the uplink messages arriving from TTN, it was necessary to add some "decode" code which, once the message is received from LoRa Network, takes it from "base64" to "json", sending it from TTN to IoT-Core.
 
 For messages of this type, i have set up a special topic on Iot-Core `ttn/sekkyone_from_device`.
