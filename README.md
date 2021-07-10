@@ -41,5 +41,5 @@ Follow the [RIOT-OS Tutorials](https://github.com/RIOT-OS/Tutorials) for more in
 ### IPv6 and LoRa assignments
 
 In this folders are present two different network implementations for sekkyone project. Each version is provided with a FIT/IoT-Lab jupyter notebook and configuration files.
-* [IPv6 folder](./sekkyone_mesh): Sekkyone implementation with ipv6 short-range mesh network
-* [LoRa folder](./sekkyone_lora): Sekkyone implementation with LoRa long-range network
+* **[IPv6 folder](./sekkyone_mesh)**: Sekkyone implementation with ipv6 short-range mesh network
+* **[LoRa folder](./sekkyone_lora)**: Sekkyone implementation with LoRa long-range network
