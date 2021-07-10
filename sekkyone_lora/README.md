@@ -6,6 +6,8 @@ In this folder you can have a look to:
 * **dev folder**: Modified main.c and makefile
 * **extra**: Jupyter notebook related to LoRaWan experiment and extra material for LoRa integration
 
+Here is a [blog post](https://drjack0.medium.com/sekkyone-smart-garbage-bucket-2d1e88ba5505) with informations on the overall system
+
 ## Questions
 
 First of all, let's answer some questions about the course

@@ -7,7 +7,7 @@ This is the main repository for the Internet of Things (IoT) course at Sapienza 
 
 Imagine having a garbage collection system organized by filling, with the possibility of no longer having the full bucket on the street or, in the case, knowing if the bucket is full and waiting / going somewhere else to throw the garbage.
 
-For more informations, open the directory!
+For more informations, open the directory or see the [blog post](https://drjack0.medium.com/sekkyone-smart-garbage-bucket-2d1e88ba5505)
 
 ## Installation
 According to [Getting Started RIOT-Docs](https://doc.riot-os.org/getting-started.html), you can obtain the latest RIOT code from the [official repository](https://github.com/RIOT-OS/) where you can find also tutorials, examples and some other interesting stuffs.
