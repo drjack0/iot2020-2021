@@ -1,0 +1,1 @@
+SELECT payload_fields.decoded.temperature, payload_fields.decoded.humidity, payload_fields.decoded.levelFlame, payload_fields.decoded.levelFill FROM "ttn/sekkyone_from_device"
